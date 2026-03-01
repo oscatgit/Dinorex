@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    
+    <style>
+      /* Estilo para la pantalla de inicio */
+      #overlay {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        z-index: 9999; color: white; font-family: sans-serif;
+      }
+      #start-btn {
+        padding: 15px 30px; font-size: 1.2rem; cursor: pointer;
+        background: #007bff; color: white; border: none; border-radius: 8px;
+      }
+      
+      /* Estilo para el botón Detener */
+      #stop-btn {
+        position: fixed;
+        top: 20px; right: 20px;
+        padding: 10px 20px;
+        font-size: 1rem;
+        cursor: pointer;
+        background: #dc3545; /* Rojo */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        z-index: 1000;
+        display: none; /* Oculto por defecto */
+        font-family: sans-serif;
+      }
+
+      /* Ocultar la escena hasta que se pulse el botón */
+      a-scene { display: none; }
+    </style>
+  </head>
+  <body>
+
+    <div id="overlay">
+      <h2>Experiencia WebAR</h2>
+      <p>Apunta con tu cámara al marcador</p>
+      <button id="start-btn">INICIAR EXPERIENCIA</button>
+    </div>
+
+    <button id="stop-btn">DETENER</button>
+
+    <a-scene 
+      mindar-image="imageTargetSrc: ./targets.mind; autoStart: false;" 
+      color-space="sRGB" 
+      renderer="colorManagement: true, physicallyCorrectLights" 
+      vr-mode-ui="enabled: false" 
+      device-orientation-permission-ui="enabled: false">
+      
+      <a-assets>
+        <video id="miVideo" src="./dinorex.mp4" preload="auto" loop="true" 
+               webkit-playsinline playsinline crossorigin="anonymous"></video>
+      </assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity id="target-ent" mindar-image-target="targetIndex: 0">
+        <a-video 
+          src="#miVideo" 
+          position="0 0 0.1" 
+          rotation="0 0 0" 
+          width="1" height="0.56" 
+          id="video-display"
+          material="shader: flat; src: #miVideo">
+        </a-video>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      const startBtn = document.querySelector("#start-btn");
+      const stopBtn = document.querySelector("#stop-btn");
+      const overlay = document.querySelector("#overlay");
+      const scene = document.querySelector("a-scene");
+      const video = document.querySelector("#miVideo");
+      const target = document.querySelector("#target-ent");
+
+      // Iniciar AR al hacer clic
+      startBtn.addEventListener("click", () => {
+        overlay.style.display = "none"; // Quitar pantalla de inicio
+        stopBtn.style.display = "block"; // Mostrar botón detener
+        scene.style.display = "block";  // Mostrar escena
+        scene.systems["mindar-image-system"].start(); // Arrancar motor AR
+      });
+
+      // Detener AR al hacer clic
+      stopBtn.addEventListener("click", () => {
+        scene.systems["mindar-image-system"].stop(); // Detener cámara y motor
+        video.pause();
+        video.currentTime = 0; // Reiniciar video
+        
+        scene.style.display = "none";
+        stopBtn.style.display = "none";
+        overlay.style.display = "flex"; // Volver a mostrar inicio
+      });
+
+      // Lógica de reproducción automática al detectar imagen
+      target.addEventListener("targetFound", () => {
+        video.play();
+      });
+
+      target.addEventListener("targetLost", () => {
+        video.pause();
+      });
+    </script>
+  </body>
+</html>
