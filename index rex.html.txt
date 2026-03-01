@@ -15,7 +15,7 @@
       device-orientation-permission-ui="enabled: false">
       
       <a-assets>
-        <video id="vid" src="./mi-video-propio.mp4" 
+        <video id="vid" src="./dinorex.mp4" 
                preload="auto" loop="true" crossorigin="anonymous" playsinline webkit-playsinline>
         </video>
       </a-assets>
@@ -36,4 +36,5 @@
       sceneEl.addEventListener("targetLost", () => video.pause());
     </script>
   </body>
+
 </html>
