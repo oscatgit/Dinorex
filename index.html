@@ -50,31 +50,30 @@
 
     <button id="stop-btn">DETENER</button>
 
-    <a-scene 
-      mindar-image="imageTargetSrc: ./targets.mind; autoStart: false;" 
-      color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights" 
-      vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false">
-      
-      <a-assets>
-        <video id="miVideo" src="./dinorex.mp4" preload="auto" loop="true" 
-               webkit-playsinline playsinline crossorigin="anonymous"></video>
-      </assets>
+<a-scene 
+  mindar-image="imageTargetSrc: ./targets.mind; autoStart: false;" 
+  renderer="colorManagement: true, physicallyCorrectLights" 
+  vr-mode-ui="enabled: false">
+  
+  <a-assets>
+    <video id="miVideo" src="./dinorex.mp4" preload="auto" loop="true" 
+           webkit-playsinline playsinline crossorigin="anonymous"></video>
+  </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-entity id="target-ent" mindar-image-target="targetIndex: 0">
-        <a-video 
-          src="#miVideo" 
-          position="0 0 0.1" 
-          rotation="0 0 0" 
-          width="1" height="0.56" 
-          id="video-display"
-          material="shader: flat; src: #miVideo">
-        </a-video>
-      </a-entity>
-    </a-scene>
+  <a-entity id="target-ent" mindar-image-target="targetIndex: 0">
+    <a-plane color="green" opacity="0.2" width="1" height="0.56" position="0 0 0"></a-plane>
+
+    <a-video 
+      src="#miVideo" 
+      id="video-display"
+      width="1" height="0.56" 
+      position="0 0 0.1" 
+      material="shader: flat; src: #miVideo">
+    </a-video>
+  </a-entity>
+</a-scene>
 
     <script>
       const startBtn = document.querySelector("#start-btn");
@@ -113,4 +112,5 @@
       });
     </script>
   </body>
+
 </html>
